@@ -1,0 +1,37 @@
+class Solution {
+    public long pickGifts(int[] gifts, int k) {
+        
+
+
+        // Max-Heap
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        
+        // Add all gifts to the priority queue (max-heap)
+        for (int gift : gifts) {
+            pq.offer(gift);
+        }
+        
+        long sum = 0;
+        
+        
+        for (int gift : gifts) {
+            sum += gift;
+        }
+        
+        long mySum = 0;
+        
+        
+        while (k-- > 0) {
+            int maxEl = pq.poll(); 
+            int remaining = (int) Math.sqrt(maxEl); 
+            mySum += maxEl - remaining; 
+            pq.offer(remaining); 
+        }
+        
+        return sum - mySum; 
+    }
+}
+
+        
+
+    
