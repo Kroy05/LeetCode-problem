@@ -1,0 +1,21 @@
+class Solution {
+    public int[] getFinalState(int[] nums, int k, int m) {
+        int n = nums.length;
+
+        for(int i=0;i<k;i++){
+            int min = nums[0];
+            int j=0;
+
+           for(int p=1;p<n;p++){
+               if(min>nums[p]){
+               j=p;
+                min=nums[p];
+               }
+           }
+           nums[j]=nums[j]*m;
+           
+            
+        }
+        return nums;
+    }
+}
