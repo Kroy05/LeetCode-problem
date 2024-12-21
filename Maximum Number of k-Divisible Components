@@ -1,0 +1,46 @@
+class Solution {
+    private boolean isLeaf(ArrayList<Integer> list){return list.size()==1;}
+    private void removeEdge(ArrayList<ArrayList<Integer>> tree,int n){
+        int x=tree.get(n).removeFirst();
+        for(int i=0;i<tree.get(x).size();i++){
+            if(tree.get(x).get(i)==n){
+                tree.get(x).remove(i);
+                return;
+            }
+        }
+    }
+    public int maxKDivisibleComponents(int n, int[][] edges, int[] values, int k) {
+        ArrayList<ArrayList<Integer>> tree=new ArrayList<>();
+        for(int i=0;i<n;i++) tree.add(new ArrayList<>());  
+        for(int[] edge:edges){
+            tree.get(edge[0]).add(edge[1]);
+            tree.get(edge[1]).add(edge[0]);
+        }
+        boolean[] vis=new boolean[n];
+        int cnt=0;
+        long[] value=new long[n];
+        for(int i=0;i<n;i++) value[i]=values[i];
+        while(true){
+            int rem=0;
+            for(int i=0;i<n;i++){
+                if(vis[i]) rem++;
+                if(!vis[i]&&isLeaf(tree.get(i))){
+                    if(value[i]%k==0) cnt++;
+                    else value[tree.get(i).getFirst()]+=value[i];
+                    removeEdge(tree,i);
+                    vis[i]=true;
+                    rem++;
+                }
+            }
+            for(int i=0;i<n;i++){
+                if(!vis[i]&&tree.get(i).isEmpty()&&value[i]%k==0){
+                    cnt++;
+                    rem++;
+                    vis[i]=true;
+                }
+            }
+            if(rem==n) break;
+        }
+        return cnt;
+    }
+}
