@@ -1,0 +1,63 @@
+class Solution {
+    List<Integer>[] createGraph(int[][] edges){
+        int n = edges.length + 1;
+
+        @SuppressWarnings("unchecked")
+        List<Integer>[] g = new ArrayList[n];
+        for(int i = 0;i < n;i++){
+            g[i] = new ArrayList<>();
+        }
+
+        for(int i[] : edges){
+            g[i[0]].add(i[1]);
+            g[i[1]].add(i[0]);
+        }
+        return g;
+    }
+
+    static class Pair{
+        int dist;
+        int node;
+        Pair(int dist, int node){
+            this.dist = dist;
+            this.node = node;
+        }
+    }
+
+    void findExtNode(int start, int dist, int parent, List<Integer>[] g, Pair res){
+        if(dist > res.dist){
+            res.dist = dist;
+            res.node = start;
+        }
+        for(int i = 0;i < g[start].size();i++){
+            if(g[start].get(i) != parent){
+                findExtNode(g[start].get(i), dist + 1, start, g, res);
+            }
+        }
+    }
+
+    public int minimumDiameterAfterMerge(int[][] edges1, int[][] edges2) {
+        
+
+        List<Integer>[] g1 = createGraph(edges1);
+        List<Integer>[] g2 = createGraph(edges2);
+
+        Pair res = new Pair(Integer.MIN_VALUE, -1);
+        Pair res2 = new Pair(Integer.MIN_VALUE, -1);
+
+        findExtNode(0, 0, -1 ,g1, res);
+        findExtNode(res.node, 0, -1, g1, res2);
+        int dist_g1 = res2.dist;
+
+        res = new Pair(Integer.MIN_VALUE, -1);
+        res2 = new Pair(Integer.MIN_VALUE, -1);
+
+        findExtNode(0, 0, -1 ,g2, res);
+        findExtNode(res.node, 0, -1, g2, res2);
+        int dist_g2 = res2.dist;
+
+
+        int effective_dist = (dist_g1 + 1) / 2 + (dist_g2 + 1) / 2;
+        return Math.max(dist_g1, Math.max(dist_g2, effective_dist + 1));
+    }
+}
