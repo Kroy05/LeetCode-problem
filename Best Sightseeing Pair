@@ -1,0 +1,31 @@
+The problem can be divided into two parts:
+
+Maximizing values[i] + i for the left part.
+Maximizing values[j] - j for the right part.
+The best sightseeing pair can be determined by combining the maximum values from both parts.
+
+Approach
+Precompute the leftMax array, where leftMax[i] stores the maximum value of values[k] + k for all k <= i.
+Precompute the rightMax array, where rightMax[i] stores the maximum value of values[k] - k for all k >= i.
+Iterate through the array to find the maximum sum of leftMax[i-1] + rightMax[i] for all valid i.
+Complexity
+Time complexity: O(n), where n is the size of the array, as we iterate over the array a constant number of times.
+Space complexity: O(n), for storing the leftMax and rightMax arrays.
+Code
+class Solution {
+    public int maxScoreSightseeingPair(int[] values) {
+        int n = values.length;
+        int[] leftMax = new int[n];
+        int[] rightMax = new int[n];
+
+        // Compute leftMax array
+        leftMax[0] = values[0];
+        for (int i = 1; i < n; i++) {
+            leftMax[i] = Math.max(leftMax[i - 1], values[i] + i);
+        }
+
+        // Compute rightMax array
+        rightMax[n - 1] = values[n - 1] - (n - 1);
+        for (int i = n - 2; i >= 0; i--) {
+            rightMax[i] = Math.max(rightMax[i + 1], values[i] - i);
+        }
