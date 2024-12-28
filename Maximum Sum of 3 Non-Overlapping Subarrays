@@ -1,0 +1,80 @@
+The problem involves finding three non-overlapping subarrays of length k that maximize their combined sum.
+The key insight is that for each middle subarray, we can efficiently precompute the best left and right subarrays to maximize the total sum.
+
+Approach
+Sliding Window Sums:
+
+Precompute the sum of all subarrays of size k using a sliding window technique.
+Store these sums in an array sums, where sums[i] represents the sum of the subarray starting at index i.
+Left Maximum Array:
+
+Create an array left where left[i] stores the starting index of the subarray with the maximum sum in the range [0, i].
+Right Maximum Array:
+
+Create an array right where right[i] stores the starting index of the subarray with the maximum sum in the range [i, end].
+Iterate for Middle Subarray:
+
+For each possible middle subarray starting at index mid (k <= mid <= n - 2k), calculate the total sum using the best left and right subarrays (sums[left[mid-k]], sums[mid], sums[right[mid+k]]).
+Track the maximum sum and update the result indices.
+Result:
+
+Return the indices of the three subarrays that maximize the total sum.
+Complexity
+Time Complexity:
+O(n) for calculating sliding window sums.
+O(n) for building the left and right arrays.
+O(n) for iterating over all possible middle subarrays.
+Total: O(n).
+Space Complexity:
+O(n) for the sums, left, and right arrays.
+Code
+class Solution {
+    public int[] maxSumOfThreeSubarrays(int[] nums, int k) {
+        int n = nums.length;
+
+        // Step 1: Calculate sliding window sums
+        int[] sums = new int[n - k + 1];
+        int windowSum = 0;
+        for (int i = 0; i < n; i++) {
+            windowSum += nums[i];
+            if (i >= k - 1) {
+                sums[i - k + 1] = windowSum;
+                windowSum -= nums[i - k + 1];
+            }
+        }
+
+        // Step 2: Precompute left max sums
+        int[] left = new int[sums.length];
+        int leftMaxIndex = 0;
+        for (int i = 0; i < sums.length; i++) {
+            if (sums[i] > sums[leftMaxIndex]) {
+                leftMaxIndex = i;
+            }
+            left[i] = leftMaxIndex;
+        }
+
+        // Step 3: Precompute right max sums
+        int[] right = new int[sums.length];
+        int rightMaxIndex = sums.length - 1;
+        for (int i = sums.length - 1; i >= 0; i--) {
+            if (sums[i] >= sums[rightMaxIndex]) {
+                rightMaxIndex = i;
+            }
+            right[i] = rightMaxIndex;
+        }
+
+        // Step 4: Find the max sum
+        int maxSum = 0;
+        int[] result = new int[3];
+        for (int mid = k; mid < sums.length - k; mid++) {
+            int l = left[mid - k], r = right[mid + k];
+            int totalSum = sums[l] + sums[mid] + sums[r];
+            if (totalSum > maxSum) {
+                maxSum = totalSum;
+                result = new int[] {l, mid, r};
+            }
+        }
+
+        return result;
+    }
+}
