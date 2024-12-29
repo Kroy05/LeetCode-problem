@@ -1,0 +1,54 @@
+Approach
+Precompute the frequency of each character in each column of W into a 2D vector A, where A[i][c] stores the count of character c in column i.
+Use a recursive function F(i, j) with memoization:
+i represents the current column being considered.
+j represents the current position in T being matched.
+Base cases -
+If j == T.size(), return 1 (target string is completely formed).
+If i == A.size(), return 0 (exhausted all columns without forming T).
+Transition-
+Skip the current column (F(i + 1, j)).
+Use the current column to match T[j] if possible (A[i][T[j] - 'a'] * F(i + 1, j + 1)).
+Combine results and take modulo 1e9 + 7 to prevent overflow
+Complexity
+Time complexity:
+(M*T)
+
+Space complexity:
+0(M*T)
+
+Code
+class Solution {
+    public int numWays(String[] words, String target) {
+        int n = words.length;
+        int m = words[0].length();
+        int mod = 1_000_000_007;
+        int[][] A = new int[m][26];
+        for (String word : words) {
+            for (int j = 0; j < m; j++) {
+                A[j][word.charAt(j) - 'a']++;
+            }
+        }
+        int[][] dp = new int[m][target.length()];
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+        return F(0, 0, target, A, dp, mod);
+    }
+    public int F(int i, int j, String target, int[][] A, int[][] dp, int mod) {
+        if (j == target.length()) {
+            return 1;
+        }
+        if (i == A.length) {
+            return 0; 
+        }
+        if (dp[i][j] != -1) {
+            return dp[i][j]; 
+        }
+        long count = F(i + 1, j, target, A, dp, mod); 
+        count %= mod;
+        count += (1L * A[i][target.charAt(j) - 'a'] * F(i + 1, j + 1, target, A, dp, mod)) % mod;
+        count %= mod;
+        return dp[i][j] = (int) count;
+    }
+}
