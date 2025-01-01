@@ -1,0 +1,85 @@
+Approach
+Understanding the Score Calculation:
+
+If we split the string at position i, the score is:
+Number of zeros in the left substring (zerosCount) + Number of ones in the right substring (totalOnes - onesCount).
+totalOnes is the total count of '1's in the string, and onesCount is the count of '1's encountered so far up to position i.
+Optimizing the Calculation:
+
+Traverse the string while maintaining counts of zerosCount and onesCount for the left substring as we iterate.
+For each split point, calculate the score using the above formula:
+[ score = zerosCount + (totalOnes - onesCount) ]
+Update the bestScore whenever a higher score is found.
+Edge Cases:
+
+Avoid splitting at the very first or last character because both substrings must be non-empty.
+The loop stops at inputStr.length() - 1 for this reason.
+Implementation:
+
+Count the total number of '1's (totalOnes) in the string initially.
+Traverse the string and maintain zerosCount and onesCount.
+Compute and update bestScore at each split point.
+Complexity
+Time Complexity:
+
+Counting the total number of '1's requires (O(n)), where (n) is the length of the string.
+Traversing the string to calculate the score also requires (O(n)).
+Total time complexity: (O(n)).
+Space Complexity:
+
+Only a few integer variables (onesCount, zerosCount, totalOnes, and bestScore) are used.
+Total space complexity: (O(1)).
+Step-by-Step Explanation
+Input: s = "011101"
+Step 1: Precompute Total Ones
+
+Traverse the string to count the total number of '1's:
+(totalOnes = 4).
+Step 2: Traverse the String and Calculate Scores
+
+Maintain zerosCount (number of '0's in the left substring) and onesCount (number of '1's in the left substring).
+Use the formula:
+[ score = zerosCount + (totalOnes - onesCount) ]
+Update bestScore at each split point.
+Index (i)	Character	zerosCount	onesCount	Score (zerosCount + totalOnes - onesCount)	bestScore
+0	0	1	0	( 1 + (4 - 0) = 5 )	5
+1	1	1	1	( 1 + (4 - 1) = 4 )	5
+2	1	1	2	( 1 + (4 - 2) = 3 )	5
+3	1	1	3	( 1 + (4 - 3) = 2 )	5
+4	0	2	3	( 2 + (4 - 3) = 3 )	5
+Step 3: Final Best Score
+
+The highest score found is 5, which occurs at index 0.
+Logic Explanation
+onesCount and zerosCount track the count of '1's and '0's encountered up to the current split point.
+bestScore starts at Integer.MIN_VALUE and is updated with the maximum score found so far.
+After traversing the string, any remaining '1's are accounted for to calculate the final maximum score.
+Code
+public class Solution {
+    public int maxScore(String inputStr) {
+        int totalOnes = 0;
+        int zerosCount = 0;
+        int onesCount = 0;
+        int bestScore = Integer.MIN_VALUE;
+
+        // Count total ones in the string
+        for (char ch : inputStr.toCharArray()) {
+            if (ch == '1') totalOnes++;
+        }
+
+        // Traverse the string and calculate scores
+        for (int i = 0; i < inputStr.length() - 1; i++) {
+            if (inputStr.charAt(i) == '0') zerosCount++;
+            else onesCount++;
+
+            // Calculate score
+            int currentScore = zerosCount + (totalOnes - onesCount);
+            bestScore = Math.max(bestScore, currentScore);
+
+        }
+
+        return bestScore;
+    }
+}
+upvote.png
+
