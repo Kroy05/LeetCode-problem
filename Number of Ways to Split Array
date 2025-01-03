@@ -1,0 +1,42 @@
+Calculate the Total Sum:
+
+Start by computing the total sum of the array (totalSum). This represents the sum of the entire array before any split.
+Iterate Through the Array:
+
+Use a variable currentSum to maintain the sum of the left subarray as elements are added to it.
+During each iteration:
+Add the current element to currentSum (representing the left subarray).
+Subtract the current element from totalSum (updating it to represent the sum of the right subarray).
+Check if currentSum is greater than or equal to totalSum. If true, increment the validSplit counter.
+Ensure Non-Empty Subarrays:
+
+Stop the loop at nums.length - 1 to ensure the right subarray is always non-empty.
+Return the Result:
+
+After completing the loop, return the validSplit counter.
+
+Complexity
+Time complexity: 𝑂(𝑛)
+O(𝑛) to compute the total sum initially.
+O(𝑛) to iterate through the array and calculate the number of valid splits.
+Space complexity: 𝑂(1)
+Uses a few variables (totalSum, currentSum, validSplit) for computation.
+Code
+class Solution {
+    public int waysToSplitArray(int[] nums) {
+        long totalSum = 0;
+        for(int i = 0; i < nums.length; i++){
+            totalSum += nums[i];
+        }
+        long currentSum = 0;
+        int validSplit = 0;
+        for(int i = 0; i < nums.length - 1; i++){
+            currentSum += nums[i];
+            totalSum -= nums[i];
+            if(currentSum >= totalSum){
+                validSplit++;
+            }
+        }
+        return validSplit;
+    }
+}
