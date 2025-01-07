@@ -1,0 +1,148 @@
+Approach
+Step-by-Step Process
+Sort Words by Length:
+
+Start by sorting the words in descending order of length. This ensures longer words are processed before shorter ones.
+Example: Given ["mass", "as", "hero", "superhero"], after sorting:
+["superhero", "hero", "mass", "as"].
+Nested Comparison:
+
+For each word, compare it with all shorter words in the list. Check if the shorter word is a substring of the current word.
+Example: Compare "superhero" with "hero", "mass" "as" and "hero" with "mass" ans as ans so on.
+Collect Results:
+
+Add any matching shorter words to a result list.
+Remove Duplicates:
+
+Since a word may appear as a substring in multiple longer words, deduplicate the result list using sorting and the unique function.
+or we can directly break from ineer loop like shown in method 1.
+Working Example
+Input:
+["mass", "as", "hero", "superhero"]
+
+Execution Steps:
+Sort Words:
+Sorted order: ["superhero", "hero", "mass", "as"].
+
+Nested Comparison:
+
+Compare "superhero" with:
+"hero": Match! Add "hero" to results.
+"mass": No match.
+"as": No Match.
+Compare "hero" with:
+"mass": No match.
+"as": No match.
+Compare "mass" with:
+"as": Match! Add "as" to results.
+"as" has no shorter words to compare.
+Results Before Deduplication:
+["hero", "as"].
+
+Remove Duplicates:
+After deduplication: ["as", "hero"].
+
+Output:
+["as", "hero"]
+
+📊 Complexity
+Time Complexity:
+
+Sorting words by length: O(nlogn)
+Nested comparison: O(n 
+2
+ ⋅m), where n is the number of words and m is the average length of words.
+Deduplication: O(rlogr), where r is the size of the result vector.
+Overall: O(n 
+2
+ ⋅m) in the worst case.
+Space Complexity:
+
+Result vector requires O(r) space.
+Overall: O(r).
+9c6f9412-c860-47d6-9a2e-7fcf37ff3321_1686334926.180891.png
+💻 Code
+import java.util.*;
+
+class Solution {
+    public List<String> stringMatching(String[] words) {
+        int n = words.length;
+        List<String> ans = new ArrayList<>();
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (i != j && words[j].contains(words[i])) {
+                    ans.add(words[i]);
+                    break;
+                }
+            }
+        }
+
+        return ans;
+    }
+}
+Using KMP
+class Solution {
+public:
+    vector<int> computeLPS(const string& pat) {
+        int n = pat.length();
+        vector<int> lps(n, 0);
+        int len = 0;
+
+        for(int i = 1; i < n; ++i){
+            while(len > 0 && pat[i] != pat[len]){
+                len = lps[len -1];
+            }
+            if(pat[i] == pat[len]){
+                len++;
+                lps[i] = len;
+            }
+        }
+        return lps;
+    }
+
+    bool isPatternInText(const string& txt, const string& pat) {
+        if(pat.empty()) return true;
+        if(txt.length() < pat.length()) return false;
+
+        vector<int> lps = computeLPS(pat);
+        int i = 0;
+        int j = 0;
+
+        while(i < txt.length()){
+            if(txt[i] == pat[j]){
+                i++;
+                j++;
+                if(j == pat.length()){
+                    return true;
+                }
+            }
+            else{
+                if(j != 0){
+                    j = lps[j -1];
+                }
+                else{
+                    i++;
+                }
+            }
+        }
+        return false;
+    }
+
+    vector<string> stringMatching(vector<string>& words) {
+        vector<string> res;
+        sort(words.begin(), words.end(), [](const string& a, const string& b) -> bool {
+            return a.length() < b.length();
+        });
+
+        for(int i = 0; i < words.size(); ++i){
+            for(int j = i + 1; j < words.size(); ++j){
+                if(isPatternInText(words[j], words[i])){
+                    res.push_back(words[i]);
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+};
