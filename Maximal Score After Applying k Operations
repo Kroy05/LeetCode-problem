@@ -1,0 +1,36 @@
+The problem requires us to maximize the score by selecting the largest element in the array, adding it to the score, and replacing it with the ceiling of its value divided by 3. Since we need to repeatedly select the largest element, the most efficient way is to use a max heap (priority queue).
+
+Approach
+Max Heap Construction: We use a max heap to always get the maximum element in each operation. In Java's PriorityQueue, we can create a max heap by using a comparator (a, b) -> b - a.
+
+K Operations: For each operation:
+
+Extract the maximum element from the heap.
+Add it to the score.
+Replace the extracted element with ceil(element / 3) and push it back into the heap.
+Repeat for k operations and return the total score.
+
+Complexity
+Time complexity: O(klogn)
+Space complexity: O(n)
+Code
+class Solution {
+    public long maxKelements(int[] nums, int k) {
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a,b)->b-a);
+        
+        // Insert all numbers into the max-heap
+        for (int num : nums) {
+            maxHeap.add(num);
+        }
+        
+        long score = 0;
+        
+        // Perform k operations
+        while(k-->0){
+            int n = maxHeap.poll();
+            score+=n;
+            maxHeap.offer((n+2)/3);
+        }
+        return score;
+    }
+}
