@@ -1,0 +1,50 @@
+Key Points 🔑
+The string must have an even length to be valid.
+Left-to-right pass ensures no unmatched closing parentheses.
+Right-to-left pass ensures no unmatched opening parentheses.
+locked[i] == '0' indicates an unlocked character.
+Balancing is tracked using counters for locked and unlocked parentheses.
+Steps
+Check string length:
+If the string length is odd, return false because a valid string must have an even length. 🛑
+Perform a left-to-right pass ➡️:
+Track balance using open (locked '(' minus locked ')') and unlocked1 (number of unlocked characters).
+If at any point open + unlocked1 < 0, return false as it indicates an unmatched ')'. 🚫
+Perform a right-to-left pass ⬅️:
+Track balance using close (locked ')' minus locked '(') and unlocked2 (number of unlocked characters).
+If at any point close + unlocked2 < 0, return false as it indicates an unmatched '('. 🚫
+Final result:
+If both passes are successful, return true. ✅
+Complexity 📊
+Time complexity:
+O(n) ⏱️
+We traverse the string twice, once for the left-to-right pass and once for the right-to-left pass.
+
+Space complexity:
+O(1) 💾
+Only a few variables are used for counters, so the space usage is constant.
+
+Code
+class Solution {
+    public boolean canBeValid(String s, String locked) {
+        int n = s.length();
+        if (n % 2 != 0) return false;
+
+        int open = 0, close = 0, unlocked1 = 0, unlocked2 = 0;
+        for (int i = 0; i < n; i++) {
+            // Left-to-right
+            if (locked.charAt(i) == '0') unlocked1++;
+            else if (s.charAt(i) == '(') open++;
+            else if (s.charAt(i) == ')') open--;
+            if (open + unlocked1 < 0) return false;
+
+            // Right-to-left
+            int j = n - i - 1;
+            if (locked.charAt(j) == '0') unlocked2++;
+            else if (s.charAt(j) == ')') close++;
+            else if (s.charAt(j) == '(') close--;
+            if (close + unlocked2 < 0) return false;
+        }
+        return true;
+    }
+}
